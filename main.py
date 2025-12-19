@@ -1,7 +1,8 @@
 import os
 import sys
 from re import search as re_search
-video_extensions = [".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm"]
+
+VIDEO_EXTENSIONS = [".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm"]
 
 if __name__ == "__main__":
     srt_filenames = []
@@ -11,7 +12,7 @@ if __name__ == "__main__":
     for filename in os.listdir(directory):
         if filename.lower().endswith(".srt"):
             srt_filenames.append(filename)
-        if filename.lower().endswith(tuple(video_extensions)):
+        if filename.lower().endswith(tuple(VIDEO_EXTENSIONS)):
             video_filenames.append(filename)
 
     for video_filename in video_filenames:
@@ -31,3 +32,4 @@ if __name__ == "__main__":
                     new_str_full_path = f"{video_full_path.replace(extension, '.srt')}"
                     print(f"Renaming {str_full_path} to {new_str_full_path}")
                     os.rename(str_full_path, new_str_full_path)
+                    break
