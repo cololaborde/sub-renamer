@@ -15,7 +15,8 @@ if __name__ == "__main__":
             video_filenames.append(filename)
 
     for video_filename in video_filenames:
-        matched_chapter_number = re_search(r'[Ss](\d+)[Ee](\d+)', video_filename)
+        match_re = r'[sS]?(\d+)[eExX](\d+)'
+        matched_chapter_number = re_search(match_re, video_filename)
         if matched_chapter_number:
             chapter_number = matched_chapter_number.group(2)
         
