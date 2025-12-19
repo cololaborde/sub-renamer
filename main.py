@@ -9,9 +9,9 @@ if __name__ == "__main__":
     
     directory = sys.argv[1]
     for filename in os.listdir(directory):
-        if filename.endswith(".srt"):
+        if filename.lower().endswith(".srt"):
             srt_filenames.append(filename)
-        if filename.endswith(tuple(video_extensions)):
+        if filename.lower().endswith(tuple(video_extensions)):
             video_filenames.append(filename)
 
     for video_filename in video_filenames:
