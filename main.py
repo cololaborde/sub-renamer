@@ -18,17 +18,16 @@ if __name__ == "__main__":
         match_re = r'[sS]?(\d+)[eExX](\d+)'
         matched_chapter_number = re_search(match_re, video_filename)
         if matched_chapter_number:
-            chapter_number = matched_chapter_number.group(2)
+            chapter_number = matched_chapter_number.group(2).strip().lstrip('0')
         
         for srt_filename in srt_filenames:
             matched_chapter_number_srt = re_search(match_re, srt_filename)
             if matched_chapter_number_srt:
-                chapter_number_srt = matched_chapter_number_srt.group(2)
+                chapter_number_srt = matched_chapter_number_srt.group(2).strip().lstrip('0')
                 if chapter_number == chapter_number_srt:
                     str_full_path = f"{directory}{"/" if not directory.endswith("/") else ""}{srt_filename}"
                     video_full_path = f"{directory}{"/" if not directory.endswith("/") else ""}{video_filename}"
                     extension = f".{video_filename.split('.')[-1]}"
                     new_str_full_path = f"{video_full_path.replace(extension, '.srt')}"
-                    print(str_full_path)
-                    print(new_str_full_path)
+                    print(f"Renaming {str_full_path} to {new_str_full_path}")
                     os.rename(str_full_path, new_str_full_path)
