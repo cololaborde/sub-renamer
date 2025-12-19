@@ -1,20 +1,20 @@
-import os
-import sys
+from os import path as os_path, listdir as os_listdir, rename as os_rename
+from sys import argv as sys_argv, exit as sys_exit
 from re import search as re_search
 
 VIDEO_EXTENSIONS = [".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm"]
 
 if __name__ == "__main__":
+    directory = sys_argv[1] if len(sys_argv) > 1 else None
+    if not directory or not os_path.isdir(directory):
+        print("Usage: python main.py <directory>")
+        sys_exit(1)
+
     srt_filenames = {}
     video_filenames = {}
     match_re = r'[sS]?(\d+)[eExX](\d+)'
-    
-    directory = sys.argv[1] if len(sys.argv) > 1 else None
-    if not directory or not os.path.isdir(directory):
-        print("Usage: python main.py <directory>")
-        sys.exit(1)
 
-    for filename in os.listdir(directory):
+    for filename in os_listdir(directory):
         if filename.lower().endswith(".srt"):
             matched_chapter_number_srt = re_search(match_re, filename)
             if matched_chapter_number_srt:
@@ -36,4 +36,4 @@ if __name__ == "__main__":
         extension = f".{video_filename.split('.')[-1]}"
         new_str_full_path = f"{video_full_path.replace(extension, '.srt')}"
         print(f"Renaming {str_full_path} to {new_str_full_path}")
-        os.rename(str_full_path, new_str_full_path)
+        os_rename(str_full_path, new_str_full_path)
