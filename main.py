@@ -21,7 +21,7 @@ if __name__ == "__main__":
             chapter_number = matched_chapter_number.group(2)
         
         for srt_filename in srt_filenames:
-            matched_chapter_number_srt = re_search(r'[Ss](\d+)[Ee](\d+)', srt_filename)
+            matched_chapter_number_srt = re_search(match_re, srt_filename)
             if matched_chapter_number_srt:
                 chapter_number_srt = matched_chapter_number_srt.group(2)
                 if chapter_number == chapter_number_srt:
