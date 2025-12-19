@@ -9,7 +9,7 @@ if __name__ == "__main__":
     video_filenames = []
     
     directory = sys.argv[1] if len(sys.argv) > 1 else None
-    if not directory:
+    if not directory or not os.path.isdir(directory):
         print("Usage: python main.py <directory>")
         sys.exit(1)
 
