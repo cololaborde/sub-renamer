@@ -8,7 +8,11 @@ if __name__ == "__main__":
     srt_filenames = []
     video_filenames = []
     
-    directory = sys.argv[1]
+    directory = sys.argv[1] if len(sys.argv) > 1 else None
+    if not directory:
+        print("Usage: python main.py <directory>")
+        sys.exit(1)
+
     for filename in os.listdir(directory):
         if filename.lower().endswith(".srt"):
             srt_filenames.append(filename)
