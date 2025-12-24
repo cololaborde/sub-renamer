@@ -3,6 +3,7 @@ from sys import argv as sys_argv, exit as sys_exit
 from re import search as re_search
 
 VIDEO_EXTENSIONS = [".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm"]
+SUB_EXTENSIONS = [".srt", ".ass", ".ssa", ".vtt", ".sub"]
 
 if __name__ == "__main__":
     directory = sys_argv[1] if len(sys_argv) > 1 else None
@@ -17,7 +18,7 @@ if __name__ == "__main__":
     match_re = r'[sS]?(\d+)[eExX](\d+)'
 
     for filename in os_listdir(directory):
-        if filename.lower().endswith(".srt"):
+        if filename.lower().endswith(tuple(SUB_EXTENSIONS)):
             matched_chapter_number_srt = re_search(match_re, filename)
             if matched_chapter_number_srt:
                 chapter_number_srt = matched_chapter_number_srt.group(2).strip().lstrip('0')
@@ -30,13 +31,14 @@ if __name__ == "__main__":
                 video_filenames[chapter_number] = filename
 
     for srt_chapter, srt_filename in srt_filenames.items():
+        sub_extension = f".{srt_filename.split('.')[-1]}"
         str_full_path = f"{directory}{"/" if not directory.endswith("/") else ""}{srt_filename}"
         video_filename = video_filenames.get(srt_chapter)
         if not video_filename:
             continue
         video_full_path = f"{directory}{"/" if not directory.endswith("/") else ""}{video_filename}"
         extension = f".{video_filename.split('.')[-1]}"
-        new_str_full_path = f"{video_full_path.replace(extension, '.srt')}"
+        new_str_full_path = f"{video_full_path.replace(extension, sub_extension)}"
         print(f"Renaming {str_full_path} to {new_str_full_path}")
         if not preview:
             os_rename(str_full_path, new_str_full_path)
