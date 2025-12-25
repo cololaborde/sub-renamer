@@ -5,6 +5,27 @@ from re import search as re_search
 VIDEO_EXTENSIONS = [".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm"]
 SUB_EXTENSIONS = [".srt", ".ass", ".ssa", ".vtt", ".sub"]
 
+MATCH_RE = r'[sS]?(\d+)[eExX](\d+)'
+
+def group_files_by_chaper(directory):
+
+    def get_chapter(extensions):
+        if not filename.lower().endswith(tuple(extensions)) or \
+           not (match := re_search(MATCH_RE, filename)) or \
+           not (chapter := match.group(2).strip().lstrip('0')):
+            return None
+        return chapter
+
+    srt, video = {}, {}
+    for filename in os_listdir(directory):
+        if sub_chapter := get_chapter(SUB_EXTENSIONS):
+            srt[sub_chapter] = filename
+        elif video_chapter := get_chapter(VIDEO_EXTENSIONS):
+            video[video_chapter] = filename
+        else:
+            continue
+    return srt, video
+
 if __name__ == "__main__":
     directory = sys_argv[1] if len(sys_argv) > 1 else None
     preview = sys_argv[2] if len(sys_argv) > 2 and sys_argv[2] == "--preview" else False
@@ -13,22 +34,7 @@ if __name__ == "__main__":
         print("Usage: python main.py <directory>")
         sys_exit(1)
 
-    srt_filenames = {}
-    video_filenames = {}
-    match_re = r'[sS]?(\d+)[eExX](\d+)'
-
-    for filename in os_listdir(directory):
-        if filename.lower().endswith(tuple(SUB_EXTENSIONS)):
-            matched_chapter_number_srt = re_search(match_re, filename)
-            if matched_chapter_number_srt:
-                chapter_number_srt = matched_chapter_number_srt.group(2).strip().lstrip('0')
-                srt_filenames[chapter_number_srt] = filename
-
-        if filename.lower().endswith(tuple(VIDEO_EXTENSIONS)):
-            matched_chapter_number = re_search(match_re, filename)
-            if matched_chapter_number:
-                chapter_number = matched_chapter_number.group(2).strip().lstrip('0')
-                video_filenames[chapter_number] = filename
+    srt_filenames, video_filenames = group_files_by_chaper(directory)
 
     for srt_chapter, srt_filename in srt_filenames.items():
         sub_extension = f".{srt_filename.split('.')[-1]}"
