@@ -61,4 +61,4 @@ if __name__ == "__main__":
                 user_input = input("Confirm? (y/n): ")
                 if user_input.lower() == "n":
                     continue
-            os_rename(str_full_path, new_str_full_path)
+                os_rename(str_full_path, new_str_full_path)
