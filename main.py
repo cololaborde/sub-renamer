@@ -27,29 +27,38 @@ def group_files_by_chaper(directory):
     return srt, video
 
 if __name__ == "__main__":
-    directory = sys_argv[1] if len(sys_argv) > 1 else None
-    preview = sys_argv[2] if len(sys_argv) > 2 and sys_argv[2] == "--preview" else False
+    # recursive = "--recursive" in sys_argv or "-r" in sys_argv
+    preview = "--preview" in sys_argv or "-p" in sys_argv
+    if preview:
+        dir_index = 2
+    else:
+        dir_index = 1
+    directory_list = sys_argv[dir_index:] if len(sys_argv) > dir_index else None
     
-    if not directory or not os_path.isdir(directory):
-        print("Usage: python main.py <directory>")
+    if not directory_list:
+        print("Usage: python main.py [OPTIONS] <directory> or <directory_1> <directory_2> ... <directory_n>")
+        print("Options:")
+        # print("  --recursive, -r  Recursively rename files in subdirectories")
+        print("  --preview, -p    Preview the changes before renaming")
         sys_exit(1)
+    
+    for directory in directory_list:
+        srt_filenames, video_filenames = group_files_by_chaper(directory)
 
-    srt_filenames, video_filenames = group_files_by_chaper(directory)
-
-    for srt_chapter, srt_filename in srt_filenames.items():
-        sub_extension = f".{srt_filename.split('.')[-1]}"
-        str_full_path = f"{directory}{"/" if not directory.endswith("/") else ""}{srt_filename}"
-        video_filename = video_filenames.get(srt_chapter)
-        if not video_filename:
-            continue
-        video_full_path = f"{directory}{"/" if not directory.endswith("/") else ""}{video_filename}"
-        extension = f".{video_filename.split('.')[-1]}"
-        new_str_full_path = f"{video_full_path.replace(extension, sub_extension)}"
-        print(f"Renaming {str_full_path} to {new_str_full_path}")
-        if not preview:
-            os_rename(str_full_path, new_str_full_path)
-        else:
-            user_input = input("Confirm? (y/n): ")
-            if user_input.lower() == "n":
+        for srt_chapter, srt_filename in srt_filenames.items():
+            sub_extension = f".{srt_filename.split('.')[-1]}"
+            str_full_path = f"{directory}{"/" if not directory.endswith("/") else ""}{srt_filename}"
+            video_filename = video_filenames.get(srt_chapter)
+            if not video_filename:
                 continue
+            video_full_path = f"{directory}{"/" if not directory.endswith("/") else ""}{video_filename}"
+            extension = f".{video_filename.split('.')[-1]}"
+            new_str_full_path = f"{video_full_path.replace(extension, sub_extension)}"
+            print(f"Renaming {str_full_path} to {new_str_full_path}")
+            if not preview:
+                os_rename(str_full_path, new_str_full_path)
+            else:
+                user_input = input("Confirm? (y/n): ")
+                if user_input.lower() == "n":
+                    continue
             os_rename(str_full_path, new_str_full_path)
