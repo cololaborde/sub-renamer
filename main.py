@@ -68,6 +68,7 @@ if __name__ == "__main__":
     if recursive:
         for super_dir in directory_list:
             for root, dirs, files in os_walk(super_dir):
+                rename_files(root)
                 for directory in dirs:
                     dir_full_path = f"{root}{"/" if not root.endswith("/") else ""}{directory}"
                     rename_files(dir_full_path)
