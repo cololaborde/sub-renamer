@@ -37,7 +37,8 @@ def rename_files(dir_full_path):
         video_full_path = f"{dir_full_path}{"/" if not dir_full_path.endswith("/") else ""}{video_filename}"
         extension = f".{video_filename.split('.')[-1]}"
         new_str_full_path = f"{video_full_path.replace(extension, sub_extension)}"
-        print(f"Renaming {str_full_path} to {new_str_full_path}")
+        if not no_log:
+            print(f"Renaming {str_full_path} to {new_str_full_path}")
         if not preview:
             os_rename(str_full_path, new_str_full_path)
         else:
@@ -49,6 +50,7 @@ def rename_files(dir_full_path):
 if __name__ == "__main__":
     recursive = "--recursive" in sys_argv or "-r" in sys_argv
     preview = "--preview" in sys_argv or "-p" in sys_argv
+    no_log = "--no-log" in sys_argv or "-n" in sys_argv
 
     if preview and recursive:
         dir_index = 3
