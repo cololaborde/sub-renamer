@@ -26,6 +26,26 @@ def group_files_by_chaper(directory):
             continue
     return srt, video
 
+def rename_files(dir_full_path):
+    srt_filenames, video_filenames = group_files_by_chaper(dir_full_path)
+    for srt_chapter, srt_filename in srt_filenames.items():
+        sub_extension = f".{srt_filename.split('.')[-1]}"
+        str_full_path = f"{dir_full_path}{"/" if not dir_full_path.endswith("/") else ""}{srt_filename}"
+        video_filename = video_filenames.get(srt_chapter)
+        if not video_filename:
+            continue
+        video_full_path = f"{dir_full_path}{"/" if not dir_full_path.endswith("/") else ""}{video_filename}"
+        extension = f".{video_filename.split('.')[-1]}"
+        new_str_full_path = f"{video_full_path.replace(extension, sub_extension)}"
+        print(f"Renaming {str_full_path} to {new_str_full_path}")
+        if not preview:
+            os_rename(str_full_path, new_str_full_path)
+        else:
+            user_input = input("Confirm? (y/n): ")
+            if user_input.lower() == "n":
+                continue
+            os_rename(str_full_path, new_str_full_path)
+
 if __name__ == "__main__":
     recursive = "--recursive" in sys_argv or "-r" in sys_argv
     preview = "--preview" in sys_argv or "-p" in sys_argv
@@ -50,42 +70,7 @@ if __name__ == "__main__":
             for root, dirs, files in os_walk(super_dir):
                 for directory in dirs:
                     dir_full_path = f"{root}{"/" if not root.endswith("/") else ""}{directory}"
-                    srt_filenames, video_filenames = group_files_by_chaper(dir_full_path)
-                    for srt_chapter, srt_filename in srt_filenames.items():
-                        sub_extension = f".{srt_filename.split('.')[-1]}"
-                        str_full_path = f"{dir_full_path}{"/" if not dir_full_path.endswith("/") else ""}{srt_filename}"
-                        video_filename = video_filenames.get(srt_chapter)
-                        if not video_filename:
-                            continue
-                        video_full_path = f"{dir_full_path}{"/" if not dir_full_path.endswith("/") else ""}{video_filename}"
-                        extension = f".{video_filename.split('.')[-1]}"
-                        new_str_full_path = f"{video_full_path.replace(extension, sub_extension)}"
-                        print(f"Renaming {str_full_path} to {new_str_full_path}")
-                        if not preview:
-                            os_rename(str_full_path, new_str_full_path)
-                        else:
-                            user_input = input("Confirm? (y/n): ")
-                            if user_input.lower() == "n":
-                                continue
-                            os_rename(str_full_path, new_str_full_path)
+                    rename_files(dir_full_path)
     else:
         for directory in directory_list:
-            srt_filenames, video_filenames = group_files_by_chaper(directory)
-
-            for srt_chapter, srt_filename in srt_filenames.items():
-                sub_extension = f".{srt_filename.split('.')[-1]}"
-                str_full_path = f"{directory}{"/" if not directory.endswith("/") else ""}{srt_filename}"
-                video_filename = video_filenames.get(srt_chapter)
-                if not video_filename:
-                    continue
-                video_full_path = f"{directory}{"/" if not directory.endswith("/") else ""}{video_filename}"
-                extension = f".{video_filename.split('.')[-1]}"
-                new_str_full_path = f"{video_full_path.replace(extension, sub_extension)}"
-                print(f"Renaming {str_full_path} to {new_str_full_path}")
-                if not preview:
-                    os_rename(str_full_path, new_str_full_path)
-                else:
-                    user_input = input("Confirm? (y/n): ")
-                    if user_input.lower() == "n":
-                        continue
-                    os_rename(str_full_path, new_str_full_path)
+            rename_files(directory)
