@@ -1,6 +1,7 @@
 from os import path as os_path, listdir as os_listdir, rename as os_rename, walk as os_walk
-from sys import argv as sys_argv, exit as sys_exit
+from sys import exit as sys_exit
 from re import search as re_search
+from utils import get_args
 
 VIDEO_EXTENSIONS = [".mp4", ".mkv", ".avi", ".mov", ".wmv", ".flv", ".webm"]
 SUB_EXTENSIONS = [".srt", ".ass", ".ssa", ".vtt", ".sub"]
@@ -48,24 +49,7 @@ def rename_files(dir_full_path):
             os_rename(str_full_path, new_str_full_path)
 
 if __name__ == "__main__":
-    recursive = "--recursive" in sys_argv or "-r" in sys_argv
-    preview = "--preview" in sys_argv or "-p" in sys_argv
-    no_log = "--no-log" in sys_argv or "-n" in sys_argv
-
-    if preview and recursive:
-        dir_index = 3
-    elif preview or recursive:
-        dir_index = 2
-    else:
-        dir_index = 1
-    directory_list = sys_argv[dir_index:] if len(sys_argv) > dir_index else None
-    
-    if not directory_list:
-        print("Usage: python main.py [OPTIONS] <directory> or <directory_1> <directory_2> ... <directory_n>")
-        print("Options:")
-        print("  --recursive, -r  Recursively rename files in subdirectories")
-        print("  --preview, -p    Preview the changes before renaming")
-        sys_exit(1)
+    recursive, preview, no_log, directory_list = get_args()
 
     if recursive:
         for super_dir in directory_list:
